@@ -1,0 +1,21 @@
+/* Dark mode theme */
+:root { color-scheme: dark; }
+body { font-family: Arial, sans-serif; margin: 0; background: #121212; color: #e4e4e7; }
+nav { background: #1e1e24; padding: 12px 24px; border-bottom: 1px solid #333; }
+nav a { color: #8ab4f8; margin-right: 20px; text-decoration: none; font-weight: bold; }
+nav a:hover { color: #b9d2ff; }
+main { max-width: 800px; margin: 24px auto; background: #1e1e24; padding: 24px; border-radius: 8px; border: 1px solid #333; }
+h2 { color: #f4f4f5; margin-top: 0; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th, td { border: 1px solid #3a3a42; padding: 8px 10px; text-align: left; }
+th { background: #2c3e5c; color: #fff; }
+tr:nth-child(even) { background: #25252c; }
+label { display: block; margin-top: 12px; font-weight: bold; }
+input { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; background: #121212; color: #e4e4e7; border: 1px solid #3a3a42; border-radius: 4px; }
+input:focus { outline: 2px solid #8ab4f8; border-color: #8ab4f8; }
+button { margin-top: 16px; padding: 10px 18px; background: #3b6fd4; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+button:hover { background: #4f82e6; }
+.msg { margin-top: 16px; padding: 10px; border-radius: 4px; display: none; }
+.success { background: #12301c; color: #7ee2a0; border: 1px solid #1f5c33; display: block; }
+.error { background: #3a1518; color: #ff9aa2; border: 1px solid #6b252b; display: block; }
+.info { background: #2a2a32; color: #c4c4cc; border: 1px solid #3a3a42; display: block; }

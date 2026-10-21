@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav><a href="index.html">Student List</a><a href="register.html">Register Student</a></nav>
+  <main>
+    <h2>Student Registration</h2>
+    <form id="regForm">
+      <label for="name">Name</label>
+      <input id="name" name="name" type="text" required>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required>
+      <label for="course">Course</label>
+      <input id="course" name="course" type="text" required>
+      <label for="age">Age</label>
+      <input id="age" name="age" type="number" min="5" max="100" required>
+      <button type="submit">Register</button>
+    </form>
+    <div id="message" class="msg"></div>
+  </main>
+
+  <script>
+    const API_URL = "/api/students";
+    const form = document.getElementById("regForm");
+    const message = document.getElementById("message");
+
+    function show(text, type) {
+      message.textContent = text;
+      message.className = "msg " + type;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Collect form values into a JS object -> JSON body
+      const student = {
+        name:   form.name.value.trim(),
+        email:  form.email.value.trim(),
+        course: form.course.value.trim(),
+        age:    Number(form.age.value)
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(student)
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (response.status === 201) {
+          show(`Success: ${data.message} (ID ${data.student.id})`, "success");
+          form.reset();
+        } else if (response.status === 400) {
+          show("Error 400: " + (data.message || "Invalid data submitted."), "error");
+        } else if (response.status === 409) {
+          show("Error 409: " + (data.message || "Student already exists."), "error");
+        } else if (response.status >= 500) {
+          show(`Error ${response.status}: Server problem, please try again later.`, "error");
+        } else {
+          show(`Unexpected response: ${response.status}`, "error");
+        }
+      } catch (err) {
+        show("Network error - could not reach the server.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav><a href="index.html">Student List</a><a href="register.html">Register Student</a></nav>
+  <main>
+    <h2>Student List</h2>
+    <button id="reload">Reload</button>
+    <div id="status" class="msg"></div>
+    <table id="studentTable" style="display:none">
+      <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Course</th><th>Age</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script>
+    const API_URL = "/api/students";
+    const statusBox = document.getElementById("status");
+    const table = document.getElementById("studentTable");
+    const tbody = table.querySelector("tbody");
+
+    function showStatus(text, type) {
+      statusBox.textContent = text;
+      statusBox.className = "msg " + type;
+    }
+
+    // Build rows with textContent (prevents HTML injection)
+    function renderStudents(students) {
+      tbody.innerHTML = "";
+      students.forEach(s => {
+        const tr = document.createElement("tr");
+        [s.id, s.name, s.email, s.course, s.age].forEach(v => {
+          const td = document.createElement("td");
+          td.textContent = v;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.style.display = "table";
+    }
+
+    async function loadStudents() {
+      table.style.display = "none";
+      showStatus("Loading students...", "info");
+      try {
+        const response = await fetch(API_URL, { method: "GET", headers: { Accept: "application/json" } });
+
+        // Handle HTTP response codes
+        if (response.status === 200) {
+          const students = await response.json();
+          if (students.length === 0) {
+            showStatus("200 OK - but no students found.", "info");
+            return;
+          }
+          statusBox.className = "msg";           // hide message
+          renderStudents(students);
+        } else if (response.status === 404) {
+          showStatus("404 Not Found - the students endpoint does not exist.", "error");
+        } else if (response.status >= 500) {
+          showStatus(`${response.status} Server Error - please try again later.`, "error");
+        } else {
+          showStatus(`Unexpected response: ${response.status} ${response.statusText}`, "error");
+        }
+      } catch (err) {
+        // Network failure / server down
+        showStatus("Network error - could not reach the server.", "error");
+      }
+    }
+
+    document.getElementById("reload").addEventListener("click", loadStudents);
+    loadStudents();
+  </script>
+</body>
+</html>
